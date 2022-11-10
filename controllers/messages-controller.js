@@ -1,5 +1,12 @@
+const path = require('path');
+
 function getMessages(req, res) {
-    res.send('<ul><li>Hello, Albert!</li></ul>');
+    res.render('messages', {
+        title: 'Messagges to my friends',
+        friend: 'Luka Doncic',
+    });
+    // res.sendFile(path.join(__dirname,'..', 'public', 'images', 'meme.jpg'));
+   // res.send('<ul><li>Hello, Albert!</li></ul>');
 };
 
 

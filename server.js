@@ -1,60 +1,41 @@
 const express = require('express');
+const path = require('path');
+
+const friendsRouter = require('../routes/friends-router');
+const messagesRouter = require('../routes/messages-router');
 
 const app = express();
 
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
+
 const PORT = 3000;
 
-const friends = [
-    {
-        id: 0,
-        name: 'Albert Einstein'
-    },
-    {
-        id: 1,
-        name: 'Sir Isaac Newton'
-    }
-]
+
+// Middleware
+app.use((req, res, next) => {
+    const start = Date.now();
+    next();
+    const delta = Date.now() - start;
+    console.log(`${req.method} ${req.baseUrl}${req.url} ${delta}ms`);
+});
+
+//serving node js to the front end
+app.use('/site', express.static( path.join(__dirname, 'public')));
+
+app.use(express.json());
+
 
 app.get('/', (req, res) => {
-    res.send('Heellloooo');
+    res.render('index', {
+        title: 'My friends are very clever',
+        caption: 'My code\'s ridiculously written',
+    });
 });
 
+app.use('/friends/', friendsRouter);
+app.use('/messages', messagesRouter);
 
-app.get('/friends', (req, res) => {
-    res.send(friends);
-});
-
-
-app.get('/friends', (req, res) => {
-    res.json(friends);
-});
-
-
-// GET /friends/22
-app.get('/friends/:friendId', (req, res) => {
-    const friendId = Number(req.params.friendId); // friendId is a string so convert to a number using Number() or add + to +req.params.friendId
-
-    const friend = friends[friendId];
-    
-    if (friend) {
-        //res.json(friend);
-        res.status(200).json(friend);
-    } else {
-        //res.sendStatus(404);
-        res.status(404).json({
-            error: "Friend does not exist"
-        });
-    }
-});
-
-
-app.get('/messages', (req, res) => {
-    res.send('<ul><li>Hello, Albert!</li></ul>');
-});
-
-app.post('/messages', (req, res) => {
-    console.log('Updating messages... ');
-});
 
 app.listen(PORT, () => {
     console.log(`Listen on port ${PORT}...`);

@@ -16,6 +16,8 @@ app.use((req, res, next) => {
     console.log(`${req.method} ${req.baseUrl}${req.url} ${delta}ms`);
 });
 
+//serving node js to the front end
+app.use('/site', express.static('public'));
 
 app.use(express.json());
 
